@@ -41,3 +41,13 @@ func GetInstances() (res []ecs.Instance, err error) {
 
 	return instances, nil
 }
+
+//返回ecs的所有IP信息
+func getInstanceIp(instance ecs.Instance) (ipAddresses []string) {
+
+	ipAddresses = append(ipAddresses, instance.InnerIpAddress.IpAddress...)
+	ipAddresses = append(ipAddresses, instance.PublicIpAddress.IpAddress...)
+	ipAddresses = append(ipAddresses, instance.VpcAttributes.PrivateIpAddress.IpAddress...)
+
+	return ipAddresses
+}
