@@ -3,25 +3,24 @@ package main
 import (
 	"bytes"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
-	"jgithub.com/buzhiyun/aliyun-extend/ecs"
+	aliyunecs "github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/buzhiyun/aliyun-extend/config"
+	"github.com/buzhiyun/aliyun-extend/ecs"
+	jsoniter "github.com/json-iterator/go"
 	"os"
 	"strings"
-	aliyunecs "github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 )
-
 
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 //显示结果
-func printEcsInfo(searchResult []aliyunecs.Instance)  {
+func printEcsInfo(searchResult []aliyunecs.Instance) {
 	buffer := bytes.Buffer{}
-	for _ , ecs := range searchResult {
+	for _, ecs := range searchResult {
 		buffer.WriteString("id: ")
 		buffer.WriteString(ecs.InstanceId)
 		buffer.WriteString("\t主机名：")
-		buffer.WriteString( ecs.InstanceName )
+		buffer.WriteString(ecs.InstanceName)
 		buffer.WriteString("\t")
 		if len(ecs.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
 			buffer.WriteString("VPC IP: ")
@@ -43,23 +42,23 @@ func printEcsInfo(searchResult []aliyunecs.Instance)  {
 
 }
 
-func search()  {
+func search() {
 	instances := ecs.GetInstances()
 
 	//jsonData , _ :=json.MarshalIndent(&instances,"","  ")
 	//fmt.Println(string(jsonData))
 
-	for i,x := range instances {
-		jsonData , _ :=json.MarshalIndent(&x,"","  ")
+	for i, x := range instances {
+		jsonData, _ := json.MarshalIndent(&x, "", "  ")
 		//jsonData , _ :=json.Marshal(&x)
-		fmt.Printf("第 %d 个实例是 : %d \n" ,i ,string(jsonData))
+		fmt.Printf("第 %d 个实例是 : %d \n", i, string(jsonData))
 	}
 
 }
 
 //返回内网地址
-func getInternalIp (ecs aliyunecs.Instance) (string) {
-	if len(ecs.VpcAttributes.PrivateIpAddress.IpAddress) > 0{
+func getInternalIp(ecs aliyunecs.Instance) string {
+	if len(ecs.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
 		return ecs.VpcAttributes.PrivateIpAddress.IpAddress[0]
 	} else {
 		return ecs.InnerIpAddress.IpAddress[0]
@@ -67,29 +66,35 @@ func getInternalIp (ecs aliyunecs.Instance) (string) {
 }
 
 //搜索IP
-func SearchIP(ipStr string)  {
+func SearchIP(ipStr string) {
 	instances := ecs.GetInstances()
 	var searchResult []aliyunecs.Instance
 	hitSearch := false
 
-	for _,x := range instances {
+	for _, x := range instances {
 		//jsonData , _ :=json.MarshalIndent(&x,"","  ")
 		//fmt.Printf("第 %d 个实例是 : %d \n" ,i ,string(jsonData))
 		hitSearch = false
 		//查找 ip
 		for _, ip := range x.VpcAttributes.PrivateIpAddress.IpAddress {
-			if strings.Contains(ip,ipStr) { hitSearch = true}
+			if strings.Contains(ip, ipStr) {
+				hitSearch = true
+			}
 		}
 		for _, ip := range x.PublicIpAddress.IpAddress {
-			if strings.Contains(ip,ipStr) { hitSearch = true}
+			if strings.Contains(ip, ipStr) {
+				hitSearch = true
+			}
 		}
 		for _, ip := range x.InnerIpAddress.IpAddress {
-			if strings.Contains(ip,ipStr) { hitSearch = true}
+			if strings.Contains(ip, ipStr) {
+				hitSearch = true
+			}
 		}
 
 		//如果有命中就追加
 		if hitSearch {
-			searchResult = append(searchResult,x )
+			searchResult = append(searchResult, x)
 		}
 	}
 	printEcsInfo(searchResult)
@@ -97,18 +102,18 @@ func SearchIP(ipStr string)  {
 }
 
 //按名字搜索
-func SearchName(ecsName string)  {
+func SearchName(ecsName string) {
 	instances := ecs.GetInstances()
 	var searchResult []aliyunecs.Instance
 
 	//对每个实例搜索
 	for _, instance := range instances {
-		if strings.Contains(instance.InstanceName,ecsName) {
-			searchResult = append(searchResult,instance)
+		if strings.Contains(instance.InstanceName, ecsName) {
+			searchResult = append(searchResult, instance)
 		}
 	}
 	printEcsInfo(searchResult)
-	
+
 }
 
 func main() {
@@ -127,6 +132,5 @@ func main() {
 	case "name":
 		SearchName(os.Args[2])
 	}
-
 
 }
