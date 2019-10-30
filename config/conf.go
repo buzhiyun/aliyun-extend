@@ -18,6 +18,11 @@ type config struct {
 		Secret   string `yaml:secret`
 		Regionid string `yaml:"regionId"`
 	} `yaml:global`
+
+	//oss 配置部分
+	Oss struct {
+		EndPoint map[string]string `yaml:endpoint`
+	} `yaml:oss`
 }
 
 //获取当前目录

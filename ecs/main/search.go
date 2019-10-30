@@ -43,7 +43,7 @@ func printEcsInfo(searchResult []aliyunecs.Instance) {
 }
 
 func search() {
-	instances := ecs.GetInstances()
+	instances, _ := ecs.GetInstances()
 
 	//jsonData , _ :=json.MarshalIndent(&instances,"","  ")
 	//fmt.Println(string(jsonData))
@@ -67,7 +67,7 @@ func getInternalIp(ecs aliyunecs.Instance) string {
 
 //搜索IP
 func SearchIP(ipStr string) {
-	instances := ecs.GetInstances()
+	instances, _ := ecs.GetInstances()
 	var searchResult []aliyunecs.Instance
 	hitSearch := false
 
