@@ -11,6 +11,11 @@ import (
 
 var Conf config
 
+func init() {
+	//初始化配置
+	GetConf()
+}
+
 type config struct {
 	// golbal 配置阿里云的key 和secret
 	Global struct {
@@ -36,8 +41,8 @@ func getCurrentDirectory() string {
 
 //加载配置
 func GetConf() {
-	filePath := "/aliyun3/lib/.aliyun.yaml"
-	//filePath := "/Volumes/data/DEV/go/jobs/src/aliyun/config/.aliyun.yaml"
+	//filePath := "/aliyun3/lib/.aliyun.yaml"
+	filePath := "/Volumes/data/DEV/go/jobs/src/aliyun/config/.aliyun.yaml"
 
 	//把yaml形式的字符串解析成struct类型
 	content, _ := ioutil.ReadFile(filePath)
