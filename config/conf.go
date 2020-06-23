@@ -39,13 +39,17 @@ func getCurrentDirectory() string {
 	return strings.Replace(dir, "\\", "/", -1)
 }
 
+var ConfFilePath = ""
+
 //加载配置
 func GetConf() {
 	//filePath := "/aliyun3/lib/.aliyun.yaml"
-	filePath := "/Volumes/data/DEV/go/jobs/src/aliyun/config/.aliyun.yaml"
+	if len(ConfFilePath) == 0 {
+		ConfFilePath = getCurrentDirectory() + "config/config.yaml"
+	}
 
 	//把yaml形式的字符串解析成struct类型
-	content, _ := ioutil.ReadFile(filePath)
+	content, _ := ioutil.ReadFile(ConfFilePath)
 
 	err := yaml.Unmarshal(content, &Conf)
 	if err != nil {
