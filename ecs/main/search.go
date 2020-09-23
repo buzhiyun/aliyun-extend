@@ -14,7 +14,7 @@ import (
 var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 //显示结果
-func printEcsInfo(searchResult []aliyunecs.Instance) {
+func printEcsInfo(searchResult []aliyunecs.InstanceInDescribeInstances) {
 	buffer := bytes.Buffer{}
 	for _, ecs := range searchResult {
 		buffer.WriteString("id: ")
@@ -57,7 +57,7 @@ func search() {
 }
 
 //返回内网地址
-func getInternalIp(ecs aliyunecs.Instance) string {
+func getInternalIp(ecs aliyunecs.InstanceInDescribeInstances) string {
 	if len(ecs.VpcAttributes.PrivateIpAddress.IpAddress) > 0 {
 		return ecs.VpcAttributes.PrivateIpAddress.IpAddress[0]
 	} else {
@@ -68,7 +68,7 @@ func getInternalIp(ecs aliyunecs.Instance) string {
 //搜索IP
 func SearchIP(ipStr string) {
 	instances, _ := ecs.GetInstances()
-	var searchResult []aliyunecs.Instance
+	var searchResult []aliyunecs.InstanceInDescribeInstances
 	hitSearch := false
 
 	for _, x := range instances {
@@ -103,8 +103,12 @@ func SearchIP(ipStr string) {
 
 //按名字搜索
 func SearchName(ecsName string) {
-	instances := ecs.GetInstances()
-	var searchResult []aliyunecs.Instance
+	instances, err := ecs.GetInstances()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	var searchResult []aliyunecs.InstanceInDescribeInstances
 
 	//对每个实例搜索
 	for _, instance := range instances {
