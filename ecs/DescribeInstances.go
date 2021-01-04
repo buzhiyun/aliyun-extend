@@ -8,9 +8,9 @@ import (
 )
 
 //得到所有ECS 主机
-func GetInstances() (res []ecs.InstanceInDescribeInstances, err error) {
+func GetInstances() (res []ecs.Instance, err error) {
 	//fmt.Println("access Info :",config.Conf.Global.Regionid, config.Conf.Global.Key)
-	var instances []ecs.InstanceInDescribeInstances
+	var instances []ecs.Instance
 
 	pageNum := 1 // 先查第一页的
 	maxPage := 1 //默认最大页数就是1
@@ -33,6 +33,7 @@ func GetInstances() (res []ecs.InstanceInDescribeInstances, err error) {
 
 		if response != nil {
 			maxPage = ((response.TotalCount - 1) / 100) + 1
+
 			instances = append(instances, response.Instances.Instance...)
 		}
 		//增加页码，准备取下一页
@@ -43,7 +44,7 @@ func GetInstances() (res []ecs.InstanceInDescribeInstances, err error) {
 }
 
 //返回ecs的所有IP信息
-func GetInstanceIp(instance ecs.InstanceInDescribeInstances) (ipAddresses []string) {
+func GetInstanceIp(instance ecs.Instance) (ipAddresses []string) {
 
 	ipAddresses = append(ipAddresses, instance.InnerIpAddress.IpAddress...)
 	ipAddresses = append(ipAddresses, instance.PublicIpAddress.IpAddress...)
